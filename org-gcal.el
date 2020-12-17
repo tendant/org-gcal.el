@@ -1340,6 +1340,12 @@ This will also update the stored ID locations using
   "Has EVENT been cancelled?"
   (string= (plist-get event :status) "cancelled"))
 
+(defun convert-time-to-local-timezone (date-time local-timezone)
+  (if (and date-time
+           local-timezone)
+      (format-time-string "%Y-%m-%dT%H:%M:%S%z" (parse-iso8601-time-string date-time) local-timezone)
+    date-time))
+
 (defun org-gcal--update-entry (calendar-id event)
   "\
   Update the entry at the current heading with information from EVENT, which is
@@ -1364,8 +1370,8 @@ This will also update the stored ID locations using
                            :date))
          (eday  (plist-get (plist-get event :end)
                            :date))
-         (start (if stime stime sday))
-         (end   (if etime etime eday))
+         (start (convert-time-to-local-timezone (if stime stime sday) org-gcal-local-timezone))
+         (end   (convert-time-to-local-timezone (if etime etime eday) org-gcal-local-timezone))
          (old-time-desc (org-gcal--get-time-and-desc))
          (old-start (plist-get old-time-desc :start))
          (old-end (plist-get old-time-desc :start))

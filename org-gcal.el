@@ -129,6 +129,13 @@ Predicate functions take an event, and if they return nil the
   :group 'org-gcal
   :type 'string)
 
+(defcustom org-gcal-local-timezone nil
+  "Org-gcal local timezone. timezone value should use 'TZ
+database name', which can be found in
+'https://en.wikipedia.org/wiki/List_of_tz_database_time_zones'."
+  :group 'org-gcal
+  :type 'string)
+
 (defvaralias 'org-gcal-remove-cancelled-events 'org-gcal-remove-api-cancelled-events)
 (defcustom org-gcal-remove-api-cancelled-events 'ask
   "Whether to remove Org-mode headlines for events cancelled in Google Calendar.
@@ -422,6 +429,7 @@ CALENDAR-ID-FILE is a cons in ‘org-gcal-fetch-file-alist’, for which see."
    (append
     `(("access_token" . ,(org-gcal--get-access-token))
       ("singleEvents" . "True"))
+    (when org-gcal-local-timezone `(("timeZone" . ,org-gcal-local-timezone)))
     (seq-let [expires sync-token]
         ;; Ensure ‘org-gcal--sync-tokens-get’ return value is actually a list
         ;; before passing to ‘seq-let’.

@@ -842,6 +842,27 @@ Second paragraph
              (deferred:sync! (request-deferred))
              "Success"))))
 
+(ert-deftest org-gcal-test--convert-time-to-local-timezone()
+  (should (equal
+           (convert-time-to-local-timezone "2021-03-03T11:30:00-00:00" nil)
+           "2021-03-03T11:30:00-00:00"))
+  (should (equal
+           (convert-time-to-local-timezone "2021-03-03T11:30:00-00:00" "")
+           "2021-03-03T11:30:00+0000"))
+  (should (equal
+           (convert-time-to-local-timezone "2021-03-03T11:30:00-08:00" "")
+           "2021-03-03T19:30:00+0000"))
+  (should (equal
+           (convert-time-to-local-timezone "2021-03-03T11:30:00-08:00" "Europe/London")
+           "2021-03-03T19:30:00+0000"))
+  (should (equal
+           (convert-time-to-local-timezone "2021-03-03T11:30:00-08:00" "America/Los_Angeles")
+           "2021-03-03T11:30:00-0800"))
+  (should (equal
+           (convert-time-to-local-timezone "2021-03-03T11:30:00-08:00" "Asia/Shanghai")
+           "2021-03-04T03:30:00+0800")))
+
+
 ;;; TODO: Figure out mocking for POST/PATCH followed by GET
 ;;; - ‘mock‘ might work for this - the argument list must be specified up
 ;;;   front, but the wildcard ‘*’ can be used to match any value. If that
